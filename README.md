@@ -1,12 +1,14 @@
 # 🎬 BetterThanVieShow - 電影院訂票系統
-
-> ASP.NET Core 9.0 Web API — 解決大量用戶搶票時的座位一致性問題，支援即時座位同步、LINE Pay 金流、QR Code 驗票。Capstone 專案，完整的生產級設計。
-
 [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-12.0-239120?logo=csharp)](https://docs.microsoft.com/en-us/dotnet/csharp/)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2019+-CC2927?logo=microsoft-sql-server)](https://www.microsoft.com/sql-server)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+BetterThanVieShow 是以威秀影城為原型設計的電影院訂票系統，目標是改善傳統售票 App 在行動裝置上體驗不直覺的問題。
+
+系統涵蓋完整的前台訂票流程與後台營運管理，採用 ASP.NET Core 9.0 Web API + SignalR + LINE Pay，實現即時座位同步、金流整合與 QR Code 驗票。
+
+> **本人負責**：後端 API 設計（32 個 API 端點）、EF Core 資料庫設計、SignalR 即時通訊、LINE Pay 金流整合、GitHub Actions CI/CD 部署。
 ---
 
 ## 🎯 架構亮點
@@ -14,8 +16,8 @@
 | 亮點 | 解決問題 | 技術方案 | 成果 |
 |-----|--------|--------|------|
 | **即時座位同步** | 多人同時搶票導致超額售出 | SignalR + Background Service 定時釋放 | 座位狀態 <100ms 同步；選座後 5 分鐘未付款自動釋放，完全避免售出問題 |
-| **LINE Pay 冪等性設計** | 支付失敗重試導致重複扣款 | HMAC 簽章驗證 + Idempotency Key + Request → Confirm 完整流程 | 防止重複扣款；支付失敗可安全重試 |
-| **Clean Architecture** | 業務邏輯與資料存取混雜難以測試 | Controllers → Services → Repositories 三層分離 | 50+ API 端點模組化；業務邏輯完全解耦；易於單測和維護 |
+| **LINE Pay HMAC 簽章驗證** | API 請求遭竄改風險 | HMAC-SHA256 + Nonce + Request → Confirm 完整流程 | 每次請求加入簽章 header；支付流程完整端對端 |
+| **Clean Architecture** | 業務邏輯與資料存取混雜難以測試 | Controllers → Services → Repositories 三層分離 | 32 個 API 端點模組化；業務邏輯完全解耦；易於單測和維護 |
 | **JWT 雙角色權限控制** | 前後台存取權限混亂 | Token 驗證 + [Authorize] 集中管理 | Customer / Admin 角色完全隔離 |
 | **GitHub Actions CI/CD** | 手動部署易出錯 | push to main 自動 build → deploy 至 Azure VM | 完整的 build 驗証 → 自動部署流程 |
 
@@ -88,7 +90,7 @@ dotnet run
 
 ## 📚 詳細文件
 
-- **[API 端點列表](docs/API.md)** — 50+ 個 API 的完整參數、回應、範例
+- **[API 端點列表](docs/API.md)** — 32 個 API 的完整參數、回應、範例
 - **[部署指南](docs/DEPLOYMENT.md)** — 本地開發、Azure 部署、GitHub Actions 設定
 - **[資料模型](docs/DATABASE.md)** — 實體關聯圖、表結構、字段說明
 
